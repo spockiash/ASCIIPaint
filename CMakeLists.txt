@@ -13,11 +13,11 @@ FetchContent_Declare(ftxui
 )
 FetchContent_MakeAvailable(ftxui)
 
-add_executable(ASCIIPaint main.cpp
-    paint_tools.hpp
-    paint_tools.cpp
-    draw_canvas/draw_canvas.hpp
-    draw_canvas/draw_canvas.cpp)
+add_executable(ASCIIPaint src/main.cpp
+    src/paint_tools.hpp
+    src/paint_tools.cpp
+    src/draw_canvas/draw_canvas.hpp
+    src/draw_canvas/draw_canvas.cpp)
 
 target_link_libraries(ASCIIPaint
   PRIVATE ftxui::screen
