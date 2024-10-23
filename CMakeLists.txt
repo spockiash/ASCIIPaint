@@ -16,7 +16,8 @@ FetchContent_MakeAvailable(ftxui)
 add_executable(ASCIIPaint main.cpp
     paint_tools.hpp
     paint_tools.cpp
-    LICENSE)
+    draw_canvas/draw_canvas.hpp
+    draw_canvas/draw_canvas.cpp)
 
 target_link_libraries(ASCIIPaint
   PRIVATE ftxui::screen

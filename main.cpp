@@ -4,6 +4,8 @@
 #include <ftxui/screen/color.hpp>  // for Color
 #include <iostream>
 #include "paint_tools.hpp"
+#include "ftxui/dom/canvas.hpp"
+
 
 using namespace ftxui;
 
@@ -18,33 +20,39 @@ Element RenderButton(Component button, char label, Color bg_focus, Color bg_norm
 
 int main() {
     auto screen = ScreenInteractive::Fullscreen();
+    auto c = Canvas(100, 100);
+    auto drawnChar = std::string("c");
 
-    // Get all printable ASCII characters
-    std::vector<char> ascii_chars = GetAsciiCharacterSet();
+    c.DrawText(2, 2, drawnChar);
 
-    // Create a vector of buttons corresponding to each ASCII character
-    std::vector<Component> buttons;
-    for (char c : ascii_chars) {
-        buttons.push_back(Button(std::string(1, c), [c] {
-            std::cout << "Button '" << c << "' clicked.\n";
-        }));
-    }
-
-    // Create a container for all buttons
-    auto button_container = Container::Vertical(buttons);
+    auto element = canvas(&c);
 
     // Renderer for the screen with flexible layout
-    auto renderer = Renderer(button_container, [&] {
-        std::vector<Element> button_elements;
-        for (size_t i = 0; i < buttons.size(); ++i) {
-            button_elements.push_back(RenderButton(buttons[i], ascii_chars[i], Color::Blue, Color::Black));
-        }
+    auto renderer = Renderer([&] {
 
-        return vbox({
-                   flexbox(button_elements) | border | flex // Flex container for buttons
-               }) | center;
+        return element | border;
     });
 
-    screen.Loop(renderer);
+    auto component = CatchEvent(renderer, [&](Event event) {
+        if (event.is_mouse() && event.mouse().Left) {
+            int x = event.mouse().x;
+            int y = event.mouse().y;
+            int b = 1;
+            // Check if the mouse coordinates are within canvas bounds
+            if (x >= 0 && x < 100 && y >= 0 && y < 100) {
+                // Clear the canvas
+
+                // Draw the character 't' at the mouse position
+                c.DrawText(x, y, drawnChar);
+
+                // Request a redraw of the canvas
+                screen.PostEvent(Event::Custom);
+            }
+            return true;
+        }
+        return false;
+    });
+
+    screen.Loop(component);
     return 0;
 }
