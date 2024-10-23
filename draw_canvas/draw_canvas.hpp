@@ -9,6 +9,7 @@
  *                                           *
  *********************************************/
 
+#include <string>
 #include <vector>
 
 namespace draw_canvas {
@@ -21,6 +22,8 @@ namespace draw_canvas {
 
         void setChar(int x, int y, char c);
         void getChar(int y, int x, char c);
+
+        std::vector<std::string> getPrintable();
     };
 }
 

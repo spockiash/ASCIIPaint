@@ -27,4 +27,20 @@ void Canvas::getChar(int x, int y, char c) {
     }
 }
 
+std::vector<std::string> Canvas::getPrintable()
+{
+    std::vector<std::string> output;
+    for(int y = 0; y < height; y++)
+    {
+        std::string line;
+        for(int x = 0; x < width; x++)
+        {
+            char c = matrix[y][x];
+            line.push_back(c);
+        }
+        output.push_back(line);
+    }
+    return output;
+}
+
 }
