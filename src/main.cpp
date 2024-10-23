@@ -46,6 +46,9 @@ int main() {
         'u', 'v', 'w', 'x', 'y', 'z', '#', '@', '*', '.'
     };
 
+    std::vector<std::string> tools = {"pencil", "line", "circle", "rectangle"};
+    int selected = 0;
+
     // Create character buttons
     std::vector<Component> buttons;
     char selected_char = 'a';  // Default character to draw
@@ -59,8 +62,12 @@ int main() {
     // Create button container
     auto button_container = Container::Horizontal(buttons);
 
-    // Main component with canvas display
+    // Create dropdown component
+    auto dropdown = Dropdown(&tools, &selected);
+
+    // Main component with canvas display - Include both button_container and dropdown
     auto main_container = Container::Vertical({
+        dropdown,
         button_container,
     });
 
@@ -81,11 +88,18 @@ int main() {
         }
         auto button_row = hbox(button_elements) | border;
 
+        // Create tool selector
+        auto tool_selector = hbox({
+                                 text("Tool: ") | vcenter,
+                                 text(tools[selected]),
+                             }) | border;
+
         // Combine everything into final layout
         return vbox({
             text("ASCII Canvas Editor") | bold | center,
-            button_row | size(HEIGHT, EQUAL, 3),
+            tool_selector | size(HEIGHT, EQUAL, 3),
             canvas_display | flex,
+            button_row,
             text("Selected char: " + std::string(1, selected_char)) | center
         });
     });
@@ -108,16 +122,50 @@ int main() {
 
             if ((is_drawing && mouse.motion == Mouse::Moved) ||
                 (mouse.button == Mouse::Left && mouse.motion == Mouse::Pressed)) {
-                // Convert screen coordinates to canvas coordinates
-                // Note: You might need to adjust these calculations based on your layout
-                int canvas_x = mouse.x - 1;  // Adjust for border
-                int canvas_y = mouse.y - 5;  // Adjust for header and buttons
-                if (canvas_x >= 0 && canvas_x < 80 && canvas_y >= 0 && canvas_y < 80) {
+                // Adjust these offsets based on your UI layout
+                const int HEADER_OFFSET = 2;    // Title
+                const int TOOL_OFFSET = 3;      // Tool selector
+                const int BORDER_OFFSET = 1;    // Border
+
+                int canvas_x = mouse.x - BORDER_OFFSET;
+                int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
+
+                if (canvas_x >= 0 && canvas_x < 30 && canvas_y >= 0 && canvas_y < 30) {
                     canvas.setChar(canvas_x, canvas_y, selected_char);
                     return true;
                 }
             }
         }
+
+        if (event.is_character())
+        {
+            //Draw pencil tool
+            if(event == Event::p)
+            {
+                selected = 0;
+            }
+            //Draw line tool
+            if(event == Event::l)
+            {
+                selected = 1;
+            }
+            //Draw circle tool
+            if(event == Event::c)
+            {
+                selected = 2;
+            }
+            //Draw rectangle tool
+            if(event == Event::r)
+            {
+                selected = 3;
+            }
+            //Save
+            if(event == Event::s)
+            {
+                selected = 1;
+            }
+        }
+
         return false;
     });
 
