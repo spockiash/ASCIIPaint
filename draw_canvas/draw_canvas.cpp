@@ -1,5 +1,13 @@
 #include "draw_canvas.hpp"
-
+/*********************************************
+ *               Canvas.hpp                  *
+ *                                           *
+ * Author: Bobo                              *
+ * Date:   23.10.2024                        *
+ * Description: Custom library for drawing   *
+ * with ASCII characters.                    *
+ *                                           *
+ *********************************************/
 namespace draw_canvas {
 
 Canvas::Canvas(int width, int height)

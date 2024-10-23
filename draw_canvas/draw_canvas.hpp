@@ -1,7 +1,16 @@
 #ifndef DRAW_CANVAS_HPP
 #define DRAW_CANVAS_HPP
 
+/*********************************************
+ *               Canvas.hpp                  *
+ *                                           *
+ * Author: Bobo                              *
+ * Date:   23.10.2024                        *
+ *                                           *
+ *********************************************/
+
 #include <vector>
+
 namespace draw_canvas {
     class Canvas {
     private:
