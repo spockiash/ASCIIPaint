@@ -29,8 +29,29 @@ namespace screens {
 
             // Create tool selector
             auto tool_selector = hbox({
-                                     text("Tool: ") | vcenter,
+                                     text("Tool: ") | flex,
                                      text(tools[selected]),
+                                     separator(),
+                                     text("Size: ") | flex,
+                                     text("1"),
+                                     separator(),
+                                     text("F1 - Help")| flex,
+                                     separator(),
+                                     text("F2 - Pencil")| flex,
+                                     separator(),
+                                     text("F3 - Line")| flex,
+                                     separator(),
+                                     text("F4 - Rectangle")| flex,
+                                     separator(),
+                                     text("F5 - Circle")| flex,
+                                     separator(),
+                                     text("F9 - Increase")| flex,
+                                     separator(),
+                                     text("F10 - Decrease")| flex,
+                                     separator(),
+                                     text("F11 - Save") | flex,
+                                     separator(),
+                                     text("'q' - Exit") | flex,
                                  }) | border;
 
 
@@ -58,8 +79,9 @@ namespace screens {
                     is_drawing = false;
                 }
 
-                if ((is_drawing && mouse.motion == Mouse::Moved) ||
-                    (mouse.button == Mouse::Left && mouse.motion == Mouse::Pressed)) {
+                // Only apply drawing if the mouse is moving while the left button is pressed, or
+                // if the left button is pressed again (initial drawing point)
+                if (is_drawing && (mouse.motion == Mouse::Moved || mouse.motion == Mouse::Pressed)) {
                     // Adjust these offsets based on your UI layout
                     const int HEADER_OFFSET = 1;    // Title
                     const int TOOL_OFFSET = 3;      // Tool selector
@@ -68,14 +90,26 @@ namespace screens {
                     int canvas_x = mouse.x - BORDER_OFFSET;
                     int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
 
-                    if (canvas_x >= 0 && canvas_x < canvas.getWidth() && canvas_y >= 0 && canvas_y < canvas.getHeight()) {
+                    // Ensure drawing only happens within the canvas bounds
+                    if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
+                        canvas_y >= 0 && canvas_y < canvas.getHeight()) {
+                        // Set the character at the current mouse position
                         canvas.setChar(canvas_x, canvas_y, selected_char);
-                        return true;
+
+                        // Ask FTXUI to redraw the canvas
+                        return true;  // Consume the event, redraw
                     }
                 }
             }
-            return false;
+
+            if (event.is_character())
+            {
+
+            }
+
+            return false;  // If no drawing occurred, don't consume the event
         }
+
 
     private:
         char selected_char = 'c';

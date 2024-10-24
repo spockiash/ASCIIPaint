@@ -1,12 +1,18 @@
 // main.cpp
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
+#include <iostream>
+#include <ostream>
 #include "screens/screen_manager.hpp"
 #include "screens/tool_menu_screen.hpp"
 #include "screens/drawing_screen.hpp"
 using namespace ftxui;
 int main() {
+    auto cursor = ftxui::Screen::Cursor{.shape = ftxui::Screen::Cursor::Shape::Hidden};
     auto screen = ftxui::ScreenInteractive::Fullscreen();
+
+    screen.SetCursor(cursor);
+
     screens::ScreenManager screen_manager;
 
     auto termSize = ftxui::Terminal::Size();
@@ -17,7 +23,7 @@ int main() {
 
     // Start with the Drawing screen
     screen_manager.SwitchTo("Drawing");
-
+    std::cout << "\e[?25l" << std::flush;
     auto renderer = ftxui::Renderer([&] {
         return screen_manager.RenderCurrentScreen()->Render();
     });
