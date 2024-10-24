@@ -22,6 +22,10 @@ add_executable(ASCIIPaint src/main.cpp
     src/screens/tool_menu_screen.hpp
     src/screens/screen_base.hpp
     src/screens/drawing_screen.hpp
+    src/draw_canvas/canvas_tool.hpp
+    src/draw_canvas/tool_base.hpp
+    src/draw_canvas/pencil_tool.h
+
 )
 
 target_link_libraries(ASCIIPaint

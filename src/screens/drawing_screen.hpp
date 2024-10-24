@@ -13,11 +13,29 @@ namespace screens {
         DrawingScreen() : canvas(30,30) {}
         ftxui::Component Render() override {
             auto matrixContent = canvas.getPrintable();
-            auto elements = CanvasToElements(matrixContent);
-            return Renderer([elements] {
+            auto canvasElements = CanvasToElements(matrixContent);
+            auto canvas_display = vbox(canvasElements) | border;
+            // Create commonly used ASCII characters for buttons
+            std::vector<char> chars = {
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+                'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                'u', 'v', 'w', 'x', 'y', 'z', '#', '@', '*', '.'
+            };
+            std::vector<std::string> tools = {"pencil", "line", "circle", "rectangle"};
+            int selected = 0;
+
+            // Create tool selector
+            auto tool_selector = hbox({
+                                     text("Tool: ") | vcenter,
+                                     text(tools[selected]),
+                                 }) | border;
+
+
+            return Renderer([tool_selector, canvas_display] {
                 return vbox({
-                    text("ASCII Canvas Editor v0.01"),
-                    vbox(elements) | border
+                    text("ASCII Canvas Editor v0.01") | bold | center,
+                    tool_selector | size(HEIGHT, EQUAL, 3),
+                    vbox(canvas_display) | flex,
                 });
                 }
             );
@@ -40,7 +58,7 @@ namespace screens {
                 if ((is_drawing && mouse.motion == Mouse::Moved) ||
                     (mouse.button == Mouse::Left && mouse.motion == Mouse::Pressed)) {
                     // Adjust these offsets based on your UI layout
-                    const int HEADER_OFFSET = 2;    // Title
+                    const int HEADER_OFFSET = 1;    // Title
                     const int TOOL_OFFSET = 3;      // Tool selector
                     const int BORDER_OFFSET = 1;    // Border
 
