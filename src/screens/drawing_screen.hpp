@@ -10,7 +10,10 @@ using namespace draw_canvas;
 namespace screens {
     class DrawingScreen : public screens::ScreenBase {
     public:
-        DrawingScreen() : canvas(30,30) {}
+        DrawingScreen(int width, int height) : canvas(width,height) {}
+        void ResizeCanvas(int width, int height) {
+
+        }
         ftxui::Component Render() override {
             auto matrixContent = canvas.getPrintable();
             auto canvasElements = CanvasToElements(matrixContent);
@@ -65,7 +68,7 @@ namespace screens {
                     int canvas_x = mouse.x - BORDER_OFFSET;
                     int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
 
-                    if (canvas_x >= 0 && canvas_x < 30 && canvas_y >= 0 && canvas_y < 30) {
+                    if (canvas_x >= 0 && canvas_x < canvas.getWidth() && canvas_y >= 0 && canvas_y < canvas.getHeight()) {
                         canvas.setChar(canvas_x, canvas_y, selected_char);
                         return true;
                     }
@@ -78,6 +81,7 @@ namespace screens {
         char selected_char = 'c';
         bool is_drawing = false;
         draw_canvas::Canvas canvas;
+
         // Helper function to convert Canvas lines to FTXUI Elements
         ftxui::Elements CanvasToElements(const std::vector<std::string>& lines) {
             ftxui::Elements elements;

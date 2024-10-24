@@ -19,9 +19,11 @@ namespace draw_canvas {
         int width, height;
     public:
         Canvas(int width, int height);
-
         void setChar(int x, int y, char c);
         void getChar(int y, int x, char c);
+        int getWidth();
+        int getHeight();
+        void resize(int width, int height);
 
         std::vector<std::string> getPrintable();
     };

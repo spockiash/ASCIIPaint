@@ -4,14 +4,16 @@
 #include "screens/screen_manager.hpp"
 #include "screens/tool_menu_screen.hpp"
 #include "screens/drawing_screen.hpp"
-
+using namespace ftxui;
 int main() {
     auto screen = ftxui::ScreenInteractive::Fullscreen();
     screens::ScreenManager screen_manager;
 
+    auto termSize = ftxui::Terminal::Size();
+
     // Register different screens
     screen_manager.RegisterScreen("ToolMenu", std::make_shared<screens::ToolMenuScreen>());
-    screen_manager.RegisterScreen("Drawing", std::make_shared<screens::DrawingScreen>());
+    screen_manager.RegisterScreen("Drawing", std::make_shared<screens::DrawingScreen>(termSize.dimx-2,termSize.dimy-5));
 
     // Start with the Drawing screen
     screen_manager.SwitchTo("Drawing");
