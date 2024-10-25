@@ -1,6 +1,7 @@
 #ifndef DRAWING_SCREEN_HPP
 #define DRAWING_SCREEN_HPP
 
+#include "../constants.hpp"
 #include "screen_base.hpp"
 #include "../draw_canvas/draw_canvas.hpp"
 
@@ -18,12 +19,7 @@ namespace screens {
             auto matrixContent = canvas.getPrintable();
             auto canvasElements = CanvasToElements(matrixContent);
             auto canvas_display = vbox(canvasElements) | border;
-            // Create commonly used ASCII characters for buttons
-            std::vector<char> chars = {
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-                'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                'u', 'v', 'w', 'x', 'y', 'z', '#', '@', '*', '.'
-            };
+
             std::vector<std::string> tools = {"pencil", "line", "circle", "rectangle"};
             int selected = 0;
 
@@ -53,13 +49,27 @@ namespace screens {
                                      separator(),
                                      text("'q' - Exit") | flex,
                                  }) | border;
+            auto selection = &selected_char;
+            for (char c : constants::LowercaseLetters) {
+                buttons.push_back(Button(std::string(1, c), [&selection, c, this] {
+                    selected_char = c;
+                }));
+            }
 
-
-            return Renderer([tool_selector, canvas_display] {
+            // Create button elements
+            std::vector<Element> button_elements;
+            for (size_t i = 0; i < buttons.size(); ++i) {
+                button_elements.push_back(
+                    RenderCharButton(buttons[i], constants::LowercaseLetters[i], Color::Blue, Color::Black)
+                    );
+            }
+            auto button_row = hbox(button_elements) | border;
+            return Renderer([tool_selector, canvas_display, button_row] {
                 return vbox({
                     text("ASCII Canvas Editor v0.01") | bold | center,
                     tool_selector | size(HEIGHT, EQUAL, 3),
                     vbox(canvas_display) | flex,
+                    button_row
                 });
                 }
             );
@@ -112,10 +122,17 @@ namespace screens {
 
 
     private:
-        char selected_char = 'c';
+        char selected_char = 'a';
         bool is_drawing = false;
+        std::vector<Component> buttons;
         draw_canvas::Canvas canvas;
-
+        // Helper function to render a character button
+        Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
+            return button->Render() |
+                   color(Color::White) |
+                   bgcolor(button->Focused() ? bg_focus : bg_normal) |
+                   size(WIDTH, EQUAL, 3);
+        }
         // Helper function to convert Canvas lines to FTXUI Elements
         ftxui::Elements CanvasToElements(const std::vector<std::string>& lines) {
             ftxui::Elements elements;
