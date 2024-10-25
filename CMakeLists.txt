@@ -26,6 +26,7 @@ add_executable(ASCIIPaint src/main.cpp
     src/draw_canvas/tool_base.hpp
     src/draw_canvas/pencil_tool.h
     src/constants.hpp
+    src/draw_canvas/characters.hpp
 
 )
 
