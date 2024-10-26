@@ -13,6 +13,11 @@ namespace draw_canvas {
 
     class Characters {
     private:
+        enum SwitchDirections
+        {
+            FORWARD,
+            BACKWARD
+        };
         // Selected option from CharacterSetOptions
         CharacterSetOptions selectedOption;
 
@@ -35,6 +40,18 @@ namespace draw_canvas {
         std::vector<char> getLowerCase() { return lowercaseLetters; }
         std::vector<char> getNumbers() { return numbers; }
         std::vector<char> getSpecial() { return specialCharacters; }
+
+        void SwitchCharacterSet(SwitchDirections direction)
+        {
+            switch(direction)
+            {
+            case SwitchDirections::FORWARD:
+                break;
+
+            case BACKWARD:
+                break;
+            }
+        }
     public:
         // Constructor that defaults the selected option
         Characters() : selectedOption(UPPER) {}

@@ -60,7 +60,7 @@ public:
             if (is_drawing && (mouse.motion == Mouse::Moved || mouse.motion == Mouse::Pressed)) {
                 // Adjust these offsets based on your UI layout
                 const int HEADER_OFFSET = 1;    // Title
-                const int TOOL_OFFSET = 1;      // Tool selector
+                const int TOOL_OFFSET = 0;      // Tool selector
                 const int BORDER_OFFSET = 1;    // Border
 
                 int canvas_x = mouse.x - BORDER_OFFSET;
@@ -92,6 +92,12 @@ private:
     std::vector<Component> buttonComponents;
     Component container;  // Add this to manage the button
 
+    enum SwitchDirections
+    {
+        FORWARD,
+        BACKWARD
+    };
+
     void InitializeComponents()
     {
         chars = Characters();
@@ -110,6 +116,10 @@ private:
         container = Container::Horizontal({buttonComponents});
     }
 
+    void SwitchCharacterSet(SwitchDirections x)
+    {
+
+    }
     // Helper function to render a character button
     Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
         return button->Render() |
@@ -137,7 +147,11 @@ private:
         }
         return elements;
     }
+
 };
+
+
+
 }
 
 #endif // DRAWING_SCREEN_HPP
