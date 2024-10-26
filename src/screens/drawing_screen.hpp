@@ -32,7 +32,6 @@ public:
                 text(constants::programNameAndVersion) | bold | center,
                 vbox(canvas_display) | flex,
                 hbox({buttonElements}) | border | center,
-                // Add your canvas rendering here
             });
         });
     }
@@ -84,10 +83,9 @@ public:
 private:
     char selected_char = 'a';
     bool is_drawing = false;
-    std::vector<Component> buttons;
+
     draw_canvas::Canvas canvas;
     draw_canvas::Characters chars;
-    int x = 0;
     std::vector<char> char_set;
     std::vector<Component> buttonComponents;
     Component container;  // Add this to manage the button
@@ -98,11 +96,36 @@ private:
         BACKWARD
     };
 
+    Component AddPrevButton()
+    {
+        return Button("<<", [this]{
+            chars.SwitchCharacterSet(Characters::BACKWARD);
+            char_set = chars.getActiveCharacterSet();
+            PopulateCharacterSelectionComponents();
+        });
+    }
+
+    Component AddNextButton()
+    {
+        return Button(">>", [this]{
+            chars.SwitchCharacterSet(Characters::FORWARD);
+            char_set = chars.getActiveCharacterSet();
+            PopulateCharacterSelectionComponents();
+        });
+    }
+
     void InitializeComponents()
     {
         chars = Characters();
-        char_set = chars.GetCharacterSet();
+        char_set = chars.getActiveCharacterSet();
 
+        PopulateCharacterSelectionComponents();
+    }
+
+    void PopulateCharacterSelectionComponents()
+    {
+        buttonComponents.clear();
+        buttonComponents.push_back(AddPrevButton());
         for(size_t i = 0; i < char_set.size(); i++ )
         {
             auto c = char_set[i];
@@ -111,15 +134,11 @@ private:
             });
             buttonComponents.push_back(button);
         }
-
-        // Wrap the component in a Container to make it interactive
+        buttonComponents.push_back(AddNextButton());
         container = Container::Horizontal({buttonComponents});
     }
 
-    void SwitchCharacterSet(SwitchDirections x)
-    {
 
-    }
     // Helper function to render a character button
     Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
         return button->Render() |
