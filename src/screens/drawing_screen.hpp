@@ -27,9 +27,24 @@ public:
         auto canvasElements = CanvasToElements(matrixContent);
         auto buttonElements = RenderCharButtons();
         auto canvas_display = vbox(canvasElements) | border;
-        return Renderer(container,[&, canvas_display, buttonElements] {
+        return Renderer(charButtonsContainer,[&, canvas_display, buttonElements, this] {
             return vbox({
                 text(constants::programNameAndVersion) | bold | center,
+                hbox(text("F1 - File"),
+                     separator(),
+                     text("F2 - Canvas"),
+                     separator(),
+                     text("F3 - Tools"),
+                     separator(),
+                     text("Selected: "),
+                     text(std::string(1,selected_char)) | color(Color::White) | bold,
+                     separator(),
+                     text("Tool size: "),
+                     text(std::to_string(tool_size)) | color(Color::White) | bold,
+                     toolDecreaseBtn->Render(),
+                     toolIncreaseBtn->Render(),
+                     separator()
+                    ) | flex ,
                 vbox(canvas_display) | flex,
                 hbox({buttonElements}) | border | center,
             });
@@ -38,7 +53,7 @@ public:
 
     bool HandleEvent(ftxui::Event event) override {
         // Let the container handle events first
-        if (container->OnEvent(event)) {
+        if (charButtonsContainer->OnEvent(event)) {
             return true;
         }
         // Handle mouse and key events for drawing
@@ -83,18 +98,46 @@ public:
 private:
     char selected_char = 'a';
     bool is_drawing = false;
-
+    int tool_size = 1;
     draw_canvas::Canvas canvas;
+
+    std::vector<Component> toolbarButtons;
+    Component toolIncreaseBtn;
+    Component toolDecreaseBtn;
+
     draw_canvas::Characters chars;
     std::vector<char> char_set;
-    std::vector<Component> buttonComponents;
-    Component container;  // Add this to manage the button
+    std::vector<Component> characterButtons;
+    Component charButtonsContainer;  // Add this to manage the button
 
     enum SwitchDirections
     {
         FORWARD,
         BACKWARD
     };
+
+    std::vector<Component> CreateToolbarButtons()
+    {
+        auto fileButton = Button("File", []{ auto x =1 ;});
+        toolbarButtons.push_back(fileButton);
+
+    }
+
+    void InitializeToolbarButtons()
+    {
+        toolIncreaseBtn = Button("+", [this]{
+            tool_size++;
+        });
+        toolDecreaseBtn = Button("-", [this]{
+            if(tool_size > 1)
+                tool_size--;
+        });
+
+        charButtonsContainer->Add(toolIncreaseBtn);
+        charButtonsContainer->Add(toolDecreaseBtn);
+    }
+
+
 
     Component AddPrevButton()
     {
@@ -120,22 +163,23 @@ private:
         char_set = chars.getActiveCharacterSet();
 
         PopulateCharacterSelectionComponents();
+        InitializeToolbarButtons();
     }
 
     void PopulateCharacterSelectionComponents()
     {
-        buttonComponents.clear();
-        buttonComponents.push_back(AddPrevButton());
+        characterButtons.clear();
+        characterButtons.push_back(AddPrevButton());
         for(size_t i = 0; i < char_set.size(); i++ )
         {
             auto c = char_set[i];
             auto button = Button(std::string(1, char_set[i]), [c, this] {
                 selected_char = c;
             });
-            buttonComponents.push_back(button);
+            characterButtons.push_back(button);
         }
-        buttonComponents.push_back(AddNextButton());
-        container = Container::Horizontal({buttonComponents});
+        characterButtons.push_back(AddNextButton());
+        charButtonsContainer = Container::Horizontal({characterButtons});
     }
 
 
@@ -150,9 +194,9 @@ private:
     std::vector<Element> RenderCharButtons()
     {
         std::vector<Element> button_elements;
-        for (size_t i = 0; i < buttonComponents.size(); ++i) {
+        for (size_t i = 0; i < characterButtons.size(); ++i) {
             button_elements.push_back(
-                RenderCharButton(buttonComponents[i], char_set[i], Color::Blue, Color::Black)
+                RenderCharButton(characterButtons[i], char_set[i], Color::Blue, Color::Black)
                 );
         }
         return button_elements;
@@ -168,7 +212,6 @@ private:
     }
 
 };
-
 
 
 }
