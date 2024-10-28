@@ -26,7 +26,7 @@ public:
     Component Render() override {
         auto matrixContent = canvas.getPrintable();
         auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
-        auto buttonElements = RenderCharButtons();
+        auto buttonElements = ScreenHelper::RenderCharButtons(characterButtons, char_set);
         auto canvas_display = vbox(canvasElements) | border;
         auto toolbar = ScreenHelper::GetToolbar();
 
@@ -176,26 +176,6 @@ private:
         }
         characterButtons.push_back(AddNextButton());
         charButtonsContainer = Container::Horizontal({characterButtons});
-    }
-
-
-    // Helper function to render a character button
-    Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
-        return button->Render() |
-               color(Color::White) |
-               bgcolor(button->Focused() ? bg_focus : bg_normal) |
-               size(WIDTH, EQUAL, 3);
-    }
-
-    std::vector<Element> RenderCharButtons()
-    {
-        std::vector<Element> button_elements;
-        for (size_t i = 0; i < characterButtons.size(); ++i) {
-            button_elements.push_back(
-                RenderCharButton(characterButtons[i], char_set[i], Color::Blue, Color::Black)
-                );
-        }
-        return button_elements;
     }
 };
 }

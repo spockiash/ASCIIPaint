@@ -12,6 +12,7 @@
 #define SCREENHELPER_H
 #include "ftxui/dom/elements.hpp"
 #include "../constants.hpp"
+#include <ftxui/component/component_base.hpp>
 namespace screens {
     using namespace ftxui;
     class ScreenHelper {
@@ -36,6 +37,26 @@ namespace screens {
                 elements.push_back(ftxui::text(line));
             }
             return elements;
+        }
+
+        //Helper wrapper function to create vector of rendered elements
+        static std::vector<Element> RenderCharButtons(std::vector<Component>& buttons, std::vector<char>& char_set)
+        {
+            std::vector<Element> button_elements;
+            for (size_t i = 0; i < buttons.size(); ++i) {
+                button_elements.push_back(
+                    RenderCharButton(buttons[i], char_set[i], Color::Blue, Color::Black)
+                    );
+            }
+            return button_elements;
+        }
+
+        // Helper function to render a character button
+        static Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
+            return button->Render() |
+                   color(Color::White) |
+                   bgcolor(button->Focused() ? bg_focus : bg_normal) |
+                   size(WIDTH, EQUAL, 3);
         }
 
 
