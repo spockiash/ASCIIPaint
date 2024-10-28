@@ -28,6 +28,7 @@ add_executable(ASCIIPaint src/main.cpp
     src/constants.hpp
     src/draw_canvas/characters.hpp
         src/screens/screen_helper.hpp
+        src/screens/file_menu_screen_copy.hpp
 
 )
 

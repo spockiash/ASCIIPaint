@@ -26,7 +26,7 @@ public:
     Component Render() override {
         auto matrixContent = canvas.getPrintable();
         auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
-        auto buttonElements = ScreenHelper::RenderCharButtons(characterButtons, char_set);
+        auto buttonElements = ScreenHelper::RenderButtons(characterButtons);
         auto canvas_display = vbox(canvasElements) | border;
         auto toolbar = ScreenHelper::GetToolbar();
 

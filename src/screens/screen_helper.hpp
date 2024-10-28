@@ -21,12 +21,13 @@ namespace screens {
         static ftxui::Element GetToolbar()
         {
             return hbox(
-                   filler(), //blank component to center the content
-                   flex_grow(text(constants::fileOptionLabel)) | color(Color::Green) | bold,
-                   flex_grow(text(constants::toolsOptionLabel)) | color(Color::Green) | bold,
-                   flex_grow(text(constants::saveOptionLabel)) | color(Color::Green) | bold,
-                   flex_grow(text(constants::loadOptionLabel)) | color(Color::Green) | bold,
-                   flex_grow(text(constants::exitOptionLabel)) | color(Color::Green) | bold
+                    filler(), //blank component to center the content
+                    flex_grow(text(constants::fileOptionLabel)) | color(Color::Green) | bold,
+                    flex_grow(text(constants::toolsOptionLabel)) | color(Color::Green) | bold,
+                    flex_grow(text(constants::canvasOptionLabel)) | color(Color::Green) | bold,
+                    flex_grow(text(constants::saveOptionLabel)) | color(Color::Green) | bold,
+                    flex_grow(text(constants::loadOptionLabel)) | color(Color::Green) | bold,
+                    flex_grow(text(constants::exitOptionLabel)) | color(Color::Green) | bold
                    ) | ftxui::flex;
         }
 
@@ -39,24 +40,29 @@ namespace screens {
             return elements;
         }
 
-        //Helper wrapper function to create vector of rendered elements
-        static std::vector<Element> RenderCharButtons(std::vector<Component>& buttons, std::vector<char>& char_set)
+        static Element RenderVerticalMenu(std::vector<Elements> buttons)
+        {
+            return vbox(buttons) | border | center;
+        }
+
+        //Helper wrapper function to create vector of rendered button elements
+        static std::vector<Element> RenderButtons(std::vector<Component>& buttons)
         {
             std::vector<Element> button_elements;
             for (size_t i = 0; i < buttons.size(); ++i) {
                 button_elements.push_back(
-                    RenderCharButton(buttons[i], char_set[i], Color::Blue, Color::Black)
+                    RenderCharButton(buttons[i], Color::Blue, Color::Black)
                     );
             }
             return button_elements;
         }
 
         // Helper function to render a character button
-        static Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
+        static Element RenderCharButton(Component button, Color bg_focus, Color bg_normal) {
             return button->Render() |
                    color(Color::White) |
-                   bgcolor(button->Focused() ? bg_focus : bg_normal) |
-                   size(WIDTH, EQUAL, 3);
+                   bgcolor(button->Focused() ? bg_focus : bg_normal);
+                   //size(WIDTH, EQUAL, 3);
         }
 
 
