@@ -6,6 +6,7 @@
 #include "../draw_canvas/characters.hpp"
 #include "screen_base.hpp"
 #include "../draw_canvas/draw_canvas.hpp"
+#include "screen_helper.hpp"
 #include <memory>
 
 using namespace ftxui;
@@ -24,10 +25,10 @@ public:
 
     Component Render() override {
         auto matrixContent = canvas.getPrintable();
-        auto canvasElements = CanvasToElements(matrixContent);
+        auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
         auto buttonElements = RenderCharButtons();
         auto canvas_display = vbox(canvasElements) | border;
-        auto toolbar = GetToolbar();
+        auto toolbar = ScreenHelper::GetToolbar();
 
         return Renderer(charButtonsContainer,[&, canvas_display, buttonElements, toolbar, this] {
             return vbox({
@@ -195,28 +196,6 @@ private:
                 );
         }
         return button_elements;
-    }
-
-    // Helper function to convert Canvas lines to FTXUI Elements
-    ftxui::Elements CanvasToElements(const std::vector<std::string>& lines) {
-        ftxui::Elements elements;
-        for (const auto& line : lines) {
-            elements.push_back(ftxui::text(line));
-        }
-        return elements;
-    }
-
-    //Helper function that creates toolbar
-    ftxui::Element GetToolbar()
-    {
-        return hbox(
-                filler(), //blank component to center the content
-                flex_grow(text(constants::fileOptionLabel)) | color(Color::Green) | bold,
-                flex_grow(text(constants::toolsOptionLabel)) | color(Color::Green) | bold,
-                flex_grow(text(constants::saveOptionLabel)) | color(Color::Green) | bold,
-                flex_grow(text(constants::loadOptionLabel)) | color(Color::Green) | bold,
-                flex_grow(text(constants::exitOptionLabel)) | color(Color::Green) | bold
-                ) | flex;
     }
 };
 }
