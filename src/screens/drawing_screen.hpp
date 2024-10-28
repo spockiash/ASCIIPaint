@@ -6,6 +6,7 @@
 #include "../draw_canvas/characters.hpp"
 #include "screen_base.hpp"
 #include "../draw_canvas/draw_canvas.hpp"
+#include "screen_helper.hpp"
 #include <memory>
 
 using namespace ftxui;
@@ -24,27 +25,15 @@ public:
 
     Component Render() override {
         auto matrixContent = canvas.getPrintable();
-        auto canvasElements = CanvasToElements(matrixContent);
-        auto buttonElements = RenderCharButtons();
+        auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
+        auto buttonElements = ScreenHelper::RenderButtons(characterButtons);
         auto canvas_display = vbox(canvasElements) | border;
-        return Renderer(charButtonsContainer,[&, canvas_display, buttonElements, this] {
+        auto toolbar = ScreenHelper::GetToolbar();
+
+        return Renderer(charButtonsContainer,[&, canvas_display, buttonElements, toolbar, this] {
             return vbox({
                 text(constants::programNameAndVersion) | bold | center,
-                hbox(text("F1 - File"),
-                     separator(),
-                     text("F2 - Canvas"),
-                     separator(),
-                     text("F3 - Tools"),
-                     separator(),
-                     text("Selected: "),
-                     text(std::string(1,selected_char)) | color(Color::White) | bold,
-                     separator(),
-                     text("Tool size: "),
-                     text(std::to_string(tool_size)) | color(Color::White) | bold,
-                     toolDecreaseBtn->Render(),
-                     toolIncreaseBtn->Render(),
-                     separator()
-                    ) | flex ,
+                toolbar,
                 vbox(canvas_display) | flex,
                 hbox({buttonElements}) | border | center,
             });
@@ -101,9 +90,17 @@ private:
     int tool_size = 1;
     draw_canvas::Canvas canvas;
 
-    std::vector<Component> toolbarButtons;
+    Component toolbarContainer;
+    Component fileMenuBtn;
+    Component toolSizeSlider;
+
+    std::string currentTool = "Brush";
+    std::vector<std::string> tools = {"Brush", "Eraser", "Fill"};
+    int selectedToolIndex = 0;
+    std::vector<Component> toolbarComponents;
     Component toolIncreaseBtn;
     Component toolDecreaseBtn;
+    bool showFileMenu = false;
 
     draw_canvas::Characters chars;
     std::vector<char> char_set;
@@ -115,29 +112,6 @@ private:
         FORWARD,
         BACKWARD
     };
-
-    std::vector<Component> CreateToolbarButtons()
-    {
-        auto fileButton = Button("File", []{ auto x =1 ;});
-        toolbarButtons.push_back(fileButton);
-
-    }
-
-    void InitializeToolbarButtons()
-    {
-        toolIncreaseBtn = Button("+", [this]{
-            tool_size++;
-        });
-        toolDecreaseBtn = Button("-", [this]{
-            if(tool_size > 1)
-                tool_size--;
-        });
-
-        charButtonsContainer->Add(toolIncreaseBtn);
-        charButtonsContainer->Add(toolDecreaseBtn);
-    }
-
-
 
     Component AddPrevButton()
     {
@@ -157,13 +131,35 @@ private:
         });
     }
 
+    void InitializeToolbar()
+    {
+        fileMenuBtn = Button("File", [this] {
+            showFileMenu = true;
+            // Callback will be implemented later
+        });
+
+        // Create tool selector
+        auto toolSelector = Menu(&tools, &selectedToolIndex);
+
+        toolSizeSlider = Slider("",&tool_size, 1, 10, 1);
+        auto toolbar_elements = Container::Horizontal({
+            fileMenuBtn,
+            Renderer([](bool) { return text(" | "); }),  // Separator
+            toolSelector | center,
+            Renderer([](bool) { return text(" | "); }),  // Separator
+            Container::Horizontal({
+                Renderer([](bool) { return text("Size: "); }),
+                toolSizeSlider
+            })
+        });
+        toolbarContainer = toolbar_elements;
+    }
+
     void InitializeComponents()
     {
         chars = Characters();
         char_set = chars.getActiveCharacterSet();
-
         PopulateCharacterSelectionComponents();
-        InitializeToolbarButtons();
     }
 
     void PopulateCharacterSelectionComponents()
@@ -181,39 +177,7 @@ private:
         characterButtons.push_back(AddNextButton());
         charButtonsContainer = Container::Horizontal({characterButtons});
     }
-
-
-    // Helper function to render a character button
-    Element RenderCharButton(Component button, char label, Color bg_focus, Color bg_normal) {
-        return button->Render() |
-               color(Color::White) |
-               bgcolor(button->Focused() ? bg_focus : bg_normal) |
-               size(WIDTH, EQUAL, 3);
-    }
-
-    std::vector<Element> RenderCharButtons()
-    {
-        std::vector<Element> button_elements;
-        for (size_t i = 0; i < characterButtons.size(); ++i) {
-            button_elements.push_back(
-                RenderCharButton(characterButtons[i], char_set[i], Color::Blue, Color::Black)
-                );
-        }
-        return button_elements;
-    }
-
-    // Helper function to convert Canvas lines to FTXUI Elements
-    ftxui::Elements CanvasToElements(const std::vector<std::string>& lines) {
-        ftxui::Elements elements;
-        for (const auto& line : lines) {
-            elements.push_back(ftxui::text(line));
-        }
-        return elements;
-    }
-
 };
-
-
 }
 
 #endif // DRAWING_SCREEN_HPP

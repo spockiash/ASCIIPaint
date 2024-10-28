@@ -14,8 +14,8 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 
 add_executable(ASCIIPaint src/main.cpp
-    src/paint_tools.hpp
-    src/paint_tools.cpp
+
+
     src/draw_canvas/draw_canvas.hpp
     src/draw_canvas/draw_canvas.cpp
     src/screens/screen_manager.hpp
@@ -27,6 +27,8 @@ add_executable(ASCIIPaint src/main.cpp
     src/draw_canvas/pencil_tool.h
     src/constants.hpp
     src/draw_canvas/characters.hpp
+        src/screens/screen_helper.hpp
+        src/screens/file_menu_screen_copy.hpp
 
 )
 

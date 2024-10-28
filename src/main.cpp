@@ -3,6 +3,7 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <iostream>
 #include <ostream>
+#include "screens/file_menu_screen_copy.hpp"
 #include "screens/screen_manager.hpp"
 #include "screens/tool_menu_screen.hpp"
 #include "screens/drawing_screen.hpp"
@@ -18,6 +19,7 @@ int main() {
     auto termSize = ftxui::Terminal::Size();
 
     // Register different screens
+    screen_manager.RegisterScreen("FileMenu", std::make_shared<screens::FileMenuScreen>());
     screen_manager.RegisterScreen("ToolMenu", std::make_shared<screens::ToolMenuScreen>());
     screen_manager.RegisterScreen("Drawing", std::make_shared<screens::DrawingScreen>(termSize.dimx-2,termSize.dimy-5));
 
@@ -30,10 +32,17 @@ int main() {
 
     auto event_handler = ftxui::CatchEvent(renderer, [&](ftxui::Event event) {
         if (event == ftxui::Event::F1) {
-            screen_manager.SwitchTo("ToolMenu");
+            screen_manager.SwitchTo("FileMenu");
             return true;
         } else if (event == ftxui::Event::F2) {
+            screen_manager.SwitchTo("ToolMenu");
+            return true;
+        } else if (event == ftxui::Event::F3) {
             screen_manager.SwitchTo("Drawing");
+            return true;
+        } else if (event == ftxui::Event::F12) {
+            screen.Clear();
+            screen.Exit();
             return true;
         }
 
