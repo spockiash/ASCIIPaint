@@ -12,6 +12,7 @@
 #define SCREENHELPER_H
 #include "ftxui/dom/elements.hpp"
 #include "../constants.hpp"
+#include <ftxui/component/component.hpp>
 #include <ftxui/component/component_base.hpp>
 namespace screens {
     using namespace ftxui;
@@ -65,6 +66,12 @@ namespace screens {
                    //size(WIDTH, EQUAL, 3);
         }
 
+        //Helper function that creates static component.
+        static Component StaticText(const std::string& content) {
+            return Renderer([content] {
+                return text(content);
+            });
+        }
 
     private:
         ScreenHelper() = default;
