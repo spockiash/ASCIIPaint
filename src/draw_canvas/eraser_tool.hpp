@@ -5,9 +5,11 @@
 #include "../constants.hpp"
 using namespace ftxui;
 namespace draw_canvas {
-class EraserTool : public ToolBase
+class EraserTool final : public ToolBase
 {
 public:
+    virtual ~EraserTool() = default;
+
     bool HandleEvent(const ftxui::Mouse& mouse, Canvas& canvas) override {
         // Start drawing on mouse press
         if (mouse.button == ftxui::Mouse::Left && mouse.motion == ftxui::Mouse::Pressed) {
@@ -21,9 +23,8 @@ public:
         if (!is_drawing) return false;
 
         if (mouse.motion == ftxui::Mouse::Moved || mouse.motion == ftxui::Mouse::Pressed) {
-
-            int canvas_x = mouse.x - BORDER_OFFSET;
-            int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
+            const int canvas_x = mouse.x - BORDER_OFFSET;
+            const int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
 
             if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
                 canvas_y >= 0 && canvas_y < canvas.getHeight()) {
@@ -34,7 +35,7 @@ public:
         return false;
     }
 
-    const char* GetName() const override { return constants::eraserToolLabel; }
+    [[nodiscard]] const char* GetName() const override { return constants::eraserToolLabel; }
 };
 }
 

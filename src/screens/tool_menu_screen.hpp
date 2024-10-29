@@ -9,9 +9,9 @@
 using namespace program_state;
 namespace screens {
 using namespace ftxui;
-    class ToolMenuScreen : public screens::ScreenBase {
+    class ToolMenuScreen final : public screens::ScreenBase {
     public:
-        ToolMenuScreen(program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)) {
+        explicit ToolMenuScreen(program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)) {
             CreateSizeControls();
             PopulateMenu();
         }
@@ -19,7 +19,7 @@ using namespace ftxui;
         ftxui::Component Render() override {
             auto toolbar = ScreenHelper::GetToolbar();
             auto buttons = ScreenHelper::RenderButtons(tool_select_buttons);
-            return ftxui::Renderer(tool_select_menu, [toolbar, buttons, this] {
+            return ftxui::Renderer(tool_select_menu, [toolbar, this] {
                 return ftxui::vbox({
                     ftxui::text("Tool Menu") | bold | ftxui::center,
                     toolbar,
@@ -65,17 +65,17 @@ using namespace ftxui;
 
         void CreateSizeControls()
         {
-            auto decreaseButton = Button("-", [this]{
+            const auto decreaseButton = Button("-", [this]{
                 if(size > min_size)
                     size--;
             });
 
-            auto increaseButton = Button("+", [this]{
+            const auto increaseButton = Button("+", [this]{
                 if(size < max_size)
                     size++;
             });
 
-            auto resetButton = Button("R", [this]{
+            const auto resetButton = Button("R", [this]{
                 size = min_size;
             });
 
@@ -88,19 +88,19 @@ using namespace ftxui;
 
         void PopulateMenu()
         {
-            auto pencilButton = Button(constants::pencilToolLabel, [this]{
+            const auto pencilButton = Button(constants::pencilToolLabel, [this]{
                 SelectTool(constants::pencilToolLabel);
             });
-            auto eraserButton = Button(constants::eraserToolLabel, [this]{
+            const auto eraserButton = Button(constants::eraserToolLabel, [this]{
                 SelectTool(constants::eraserToolLabel);
             });
-            auto lineButton = Button("Line", [this]{
-                selected_tool = "Line";
+            const auto circleButton = Button(constants::circleToolLabel, [this]{
+                SelectTool(constants::circleToolLabel);
             });
 
             tool_select_buttons.push_back(pencilButton);
             tool_select_buttons.push_back(eraserButton);
-            tool_select_buttons.push_back(lineButton);
+            tool_select_buttons.push_back(circleButton);
 
             tool_select_menu = Container::Vertical(tool_select_buttons);
         }

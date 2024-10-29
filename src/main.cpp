@@ -29,7 +29,7 @@ int main() {
         return screen_manager.RenderCurrentScreen()->Render();
     });
 
-    auto event_handler = ftxui::CatchEvent(renderer, [&](ftxui::Event event) {
+    const auto event_handler = ftxui::CatchEvent(renderer, [&](const ftxui::Event &event) {
         if (event == ftxui::Event::F1) {
             screen_manager.SwitchTo("FileMenu");
             return true;

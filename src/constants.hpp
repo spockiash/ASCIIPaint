@@ -12,6 +12,7 @@ namespace constants {
 
     constexpr const char* pencilToolLabel = "Pencil";
     constexpr const char* eraserToolLabel = "Eraser";
+    constexpr const char* circleToolLabel = "Circle";
 }
 
 #endif // CONSTANTS_HPP

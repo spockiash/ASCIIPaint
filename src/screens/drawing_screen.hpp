@@ -9,6 +9,7 @@
 #include "screen_helper.hpp"
 #include "../draw_canvas/pencil_tool.hpp"
 #include "../draw_canvas/eraser_tool.hpp"
+#include "../draw_canvas/circle_tool.hpp"
 #include "../program_state.hpp"
 #include <memory>
 
@@ -116,6 +117,7 @@ private:
         //Add tools to unordered map
         statePtr->tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
         statePtr->tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
+        statePtr->tools[constants::circleToolLabel] = []() { return std::make_unique<CircleTool>(); };
 
         tool = PencilTool();
     }
@@ -131,10 +133,10 @@ private:
     {
         characterButtons.clear();
         characterButtons.push_back(AddPrevButton());
-        for(size_t i = 0; i < char_set.size(); i++ )
+        for(const char i : char_set)
         {
-            auto c = char_set[i];
-            auto button = Button(std::string(1, char_set[i]), [c, this] {
+            auto c = i;
+            auto button = Button(std::string(1, i), [c, this] {
                 selected_char = c;
                 statePtr->current_tool->SetCharacter(c);
             });
