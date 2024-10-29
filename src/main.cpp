@@ -3,12 +3,12 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <iostream>
 #include <ostream>
-#include "screens/file_menu_screen_copy.hpp"
 #include "screens/screen_manager.hpp"
 #include "screens/tool_menu_screen.hpp"
 #include "screens/drawing_screen.hpp"
 using namespace ftxui;
 int main() {
+    auto sharedProgramState = std::make_shared<ProgramState>();
     auto cursor = ftxui::Screen::Cursor{.shape = ftxui::Screen::Cursor::Shape::Hidden};
     auto screen = ftxui::ScreenInteractive::Fullscreen();
 
@@ -19,9 +19,8 @@ int main() {
     auto termSize = ftxui::Terminal::Size();
 
     // Register different screens
-    screen_manager.RegisterScreen("FileMenu", std::make_shared<screens::FileMenuScreen>());
-    screen_manager.RegisterScreen("ToolMenu", std::make_shared<screens::ToolMenuScreen>());
-    screen_manager.RegisterScreen("Drawing", std::make_shared<screens::DrawingScreen>(termSize.dimx-2,termSize.dimy-5));
+    screen_manager.RegisterScreen("ToolMenu", std::make_shared<screens::ToolMenuScreen>(sharedProgramState));
+    screen_manager.RegisterScreen("Drawing", std::make_shared<screens::DrawingScreen>(termSize.dimx-2,termSize.dimy-5, sharedProgramState));
 
     // Start with the Drawing screen
     screen_manager.SwitchTo("Drawing");

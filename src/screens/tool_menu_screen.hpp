@@ -3,12 +3,15 @@
 
 #include "screen_base.hpp"
 #include "screen_helper.hpp"
+#include "../program_state.hpp"
 #include <ftxui/component/component.hpp>
+
+using namespace program_state;
 namespace screens {
 using namespace ftxui;
     class ToolMenuScreen : public screens::ScreenBase {
     public:
-        ToolMenuScreen() {
+        ToolMenuScreen(program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)) {
             CreateSizeControls();
             PopulateMenu();
         }
@@ -85,21 +88,28 @@ using namespace ftxui;
 
         void PopulateMenu()
         {
-            auto brushButton = Button("Brush", [this]{
-                selected_tool = "Brush";
+            auto pencilButton = Button(constants::pencilToolLabel, [this]{
+                SelectTool(constants::pencilToolLabel);
             });
-            auto eraserButton = Button("Eraser", [this]{
-                selected_tool = "Eraser";
+            auto eraserButton = Button(constants::eraserToolLabel, [this]{
+                SelectTool(constants::eraserToolLabel);
             });
             auto lineButton = Button("Line", [this]{
                 selected_tool = "Line";
             });
 
-            tool_select_buttons.push_back(brushButton);
+            tool_select_buttons.push_back(pencilButton);
             tool_select_buttons.push_back(eraserButton);
             tool_select_buttons.push_back(lineButton);
 
             tool_select_menu = Container::Vertical(tool_select_buttons);
+        }
+
+        void SelectTool(const std::string& tool_name) {
+            auto it = statePtr->tools.find(tool_name);
+            if (it != statePtr->tools.end()) {
+                statePtr->current_tool = it->second();
+            }
         }
     };
 }

@@ -9,15 +9,17 @@
 #include "screen_helper.hpp"
 #include "../draw_canvas/pencil_tool.hpp"
 #include "../draw_canvas/eraser_tool.hpp"
+#include "../program_state.hpp"
 #include <memory>
 
 using namespace ftxui;
 using namespace draw_canvas;
+using namespace program_state;
 
 namespace screens {
 class DrawingScreen : public screens::ScreenBase {
 public:
-    DrawingScreen(int width, int height) : canvas(width, height) {
+    DrawingScreen(int width, int height, program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)), canvas(width, height) {
         InitializeTool();
         InitializeComponents();
     }
@@ -51,7 +53,7 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
-            return current_tool->HandleEvent(mouse, canvas);
+            return statePtr->current_tool->HandleEvent(mouse, canvas);
         }
         // Your other event handling logic here
         return false;
@@ -79,8 +81,9 @@ private:
     Component charButtonsContainer;  // Add this to manage the button
 
     draw_canvas::PencilTool tool = PencilTool();
-    std::unique_ptr<ToolBase> current_tool;
-    std::unordered_map<std::string, std::function<std::unique_ptr<ToolBase>()>> tools;
+
+    //std::unique_ptr<ToolBase> current_tool;
+    //std::unordered_map<std::string, std::function<std::unique_ptr<ToolBase>()>> tools;
 
     enum SwitchDirections
     {
@@ -109,10 +112,10 @@ private:
     void InitializeTool()
     {
         // Initialize with default tool
-        current_tool = std::make_unique<PencilTool>();
+        statePtr->current_tool = std::make_unique<PencilTool>();
         //Add tools to unordered map
-        tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
-        tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
+        statePtr->tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
+        statePtr->tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
 
         tool = PencilTool();
     }
@@ -133,7 +136,7 @@ private:
             auto c = char_set[i];
             auto button = Button(std::string(1, char_set[i]), [c, this] {
                 selected_char = c;
-                current_tool->SetCharacter(c);
+                statePtr->current_tool->SetCharacter(c);
             });
             characterButtons.push_back(button);
         }
