@@ -7,6 +7,7 @@
 #include "screen_base.hpp"
 #include "../draw_canvas/draw_canvas.hpp"
 #include "screen_helper.hpp"
+#include "../draw_canvas/pencil_tool.hpp"
 #include <memory>
 
 using namespace ftxui;
@@ -16,6 +17,7 @@ namespace screens {
 class DrawingScreen : public screens::ScreenBase {
 public:
     DrawingScreen(int width, int height) : canvas(width, height) {
+        InitializeTool();
         InitializeComponents();
     }
 
@@ -48,6 +50,10 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
+
+            auto eventResult = tool.HandleEvent(mouse, canvas, selected_char);
+
+            return eventResult;
 
             // Start drawing on mouse press
             if (mouse.button == ftxui::Mouse::Left && mouse.motion == Mouse::Pressed) {
@@ -107,6 +113,8 @@ private:
     std::vector<Component> characterButtons;
     Component charButtonsContainer;  // Add this to manage the button
 
+    draw_canvas::PencilTool tool = PencilTool();
+
     enum SwitchDirections
     {
         FORWARD,
@@ -153,6 +161,11 @@ private:
             })
         });
         toolbarContainer = toolbar_elements;
+    }
+
+    void InitializeTool()
+    {
+        tool = PencilTool();
     }
 
     void InitializeComponents()

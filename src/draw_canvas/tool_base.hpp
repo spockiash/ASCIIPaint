@@ -2,18 +2,13 @@
 #define TOOL_BASE_HPP
 
 #include "draw_canvas.hpp"
+#include <ftxui/component/event.hpp>
 namespace draw_canvas {
     class ToolBase {
     public:
         virtual ~ToolBase() = default;
-        virtual void SetSize(int size) { tool_size = size; }
-        virtual int GetSize() { return tool_size; }
-        virtual void ApplyTool(draw_canvas::Canvas& canvas, char symbol, int x, int y) = 0;
-        virtual void ApplyTool(draw_canvas::Canvas& canvas, char symbol, int x0, int y0, int x1, int y1) = 0;
-
-    protected:
-        int tool_size = 1;
-
+        virtual bool HandleEvent(const ftxui::Mouse& mouse, Canvas& canvas, int selected_char) = 0;
+        virtual const char* GetName() const = 0;
     };
 }
 

@@ -1,0 +1,45 @@
+#ifndef PENCIL_TOOL_HPP
+#define PENCIL_TOOL_HPP
+
+#include "tool_base.hpp"
+using namespace ftxui;
+namespace draw_canvas {
+class PencilTool : public ToolBase
+{
+public:
+    bool HandleEvent(const ftxui::Mouse& mouse, Canvas& canvas, int selected_char) override {
+        // Start drawing on mouse press
+        if (mouse.button == ftxui::Mouse::Left && mouse.motion == ftxui::Mouse::Pressed) {
+            is_drawing = true;
+        }
+        // Stop drawing on release
+        else if (mouse.button == ftxui::Mouse::Left && mouse.motion == ftxui::Mouse::Released) {
+            is_drawing = false;
+        }
+
+        if (!is_drawing) return false;
+
+        if (mouse.motion == ftxui::Mouse::Moved || mouse.motion == ftxui::Mouse::Pressed) {
+            const int HEADER_OFFSET = 1;
+            const int TOOL_OFFSET = 0;
+            const int BORDER_OFFSET = 1;
+
+            int canvas_x = mouse.x - BORDER_OFFSET;
+            int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
+
+            if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
+                canvas_y >= 0 && canvas_y < canvas.getHeight()) {
+                canvas.setChar(canvas_x, canvas_y, selected_char);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const char* GetName() const override { return "Pencil"; }
+private:
+    bool is_drawing = false;
+};
+}
+
+#endif // PENCIL_TOOL_HPP
