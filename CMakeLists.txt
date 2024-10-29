@@ -32,6 +32,7 @@ add_executable(ASCIIPaint src/main.cpp
     src/draw_canvas/pencil_tool.hpp
     src/draw_canvas/eraser_tool.hpp
     src/program_state.hpp
+        src/draw_canvas/circle_tool.hpp
 
 )
 
