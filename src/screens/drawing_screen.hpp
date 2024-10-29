@@ -7,15 +7,20 @@
 #include "screen_base.hpp"
 #include "../draw_canvas/draw_canvas.hpp"
 #include "screen_helper.hpp"
+#include "../draw_canvas/pencil_tool.hpp"
+#include "../draw_canvas/eraser_tool.hpp"
+#include "../program_state.hpp"
 #include <memory>
 
 using namespace ftxui;
 using namespace draw_canvas;
+using namespace program_state;
 
 namespace screens {
 class DrawingScreen : public screens::ScreenBase {
 public:
-    DrawingScreen(int width, int height) : canvas(width, height) {
+    DrawingScreen(int width, int height, program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)), canvas(width, height) {
+        InitializeTool();
         InitializeComponents();
     }
 
@@ -48,37 +53,7 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
-
-            // Start drawing on mouse press
-            if (mouse.button == ftxui::Mouse::Left && mouse.motion == Mouse::Pressed) {
-                is_drawing = true;
-            }
-            // Stop drawing on release
-            else if (mouse.button == Mouse::Left && mouse.motion == Mouse::Released) {
-                is_drawing = false;
-            }
-
-            // Only apply drawing if the mouse is moving while the left button is pressed, or
-            // if the left button is pressed again (initial drawing point)
-            if (is_drawing && (mouse.motion == Mouse::Moved || mouse.motion == Mouse::Pressed)) {
-                // Adjust these offsets based on your UI layout
-                const int HEADER_OFFSET = 1;    // Title
-                const int TOOL_OFFSET = 0;      // Tool selector
-                const int BORDER_OFFSET = 1;    // Border
-
-                int canvas_x = mouse.x - BORDER_OFFSET;
-                int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
-
-                // Ensure drawing only happens within the canvas bounds
-                if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
-                    canvas_y >= 0 && canvas_y < canvas.getHeight()) {
-                    // Set the character at the current mouse position
-                    canvas.setChar(canvas_x, canvas_y, selected_char);
-
-                    // Ask FTXUI to redraw the canvas
-                    return true;  // Consume the event, redraw
-                }
-            }
+            return statePtr->current_tool->HandleEvent(mouse, canvas);
         }
         // Your other event handling logic here
         return false;
@@ -94,8 +69,6 @@ private:
     Component fileMenuBtn;
     Component toolSizeSlider;
 
-    std::string currentTool = "Brush";
-    std::vector<std::string> tools = {"Brush", "Eraser", "Fill"};
     int selectedToolIndex = 0;
     std::vector<Component> toolbarComponents;
     Component toolIncreaseBtn;
@@ -106,6 +79,11 @@ private:
     std::vector<char> char_set;
     std::vector<Component> characterButtons;
     Component charButtonsContainer;  // Add this to manage the button
+
+    draw_canvas::PencilTool tool = PencilTool();
+
+    //std::unique_ptr<ToolBase> current_tool;
+    //std::unordered_map<std::string, std::function<std::unique_ptr<ToolBase>()>> tools;
 
     enum SwitchDirections
     {
@@ -131,28 +109,15 @@ private:
         });
     }
 
-    void InitializeToolbar()
+    void InitializeTool()
     {
-        fileMenuBtn = Button("File", [this] {
-            showFileMenu = true;
-            // Callback will be implemented later
-        });
+        // Initialize with default tool
+        statePtr->current_tool = std::make_unique<PencilTool>();
+        //Add tools to unordered map
+        statePtr->tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
+        statePtr->tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
 
-        // Create tool selector
-        auto toolSelector = Menu(&tools, &selectedToolIndex);
-
-        toolSizeSlider = Slider("",&tool_size, 1, 10, 1);
-        auto toolbar_elements = Container::Horizontal({
-            fileMenuBtn,
-            Renderer([](bool) { return text(" | "); }),  // Separator
-            toolSelector | center,
-            Renderer([](bool) { return text(" | "); }),  // Separator
-            Container::Horizontal({
-                Renderer([](bool) { return text("Size: "); }),
-                toolSizeSlider
-            })
-        });
-        toolbarContainer = toolbar_elements;
+        tool = PencilTool();
     }
 
     void InitializeComponents()
@@ -171,6 +136,7 @@ private:
             auto c = char_set[i];
             auto button = Button(std::string(1, char_set[i]), [c, this] {
                 selected_char = c;
+                statePtr->current_tool->SetCharacter(c);
             });
             characterButtons.push_back(button);
         }
