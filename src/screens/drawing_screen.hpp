@@ -50,41 +50,7 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
-
-            auto eventResult = tool.HandleEvent(mouse, canvas, selected_char);
-
-            return eventResult;
-
-            // Start drawing on mouse press
-            if (mouse.button == ftxui::Mouse::Left && mouse.motion == Mouse::Pressed) {
-                is_drawing = true;
-            }
-            // Stop drawing on release
-            else if (mouse.button == Mouse::Left && mouse.motion == Mouse::Released) {
-                is_drawing = false;
-            }
-
-            // Only apply drawing if the mouse is moving while the left button is pressed, or
-            // if the left button is pressed again (initial drawing point)
-            if (is_drawing && (mouse.motion == Mouse::Moved || mouse.motion == Mouse::Pressed)) {
-                // Adjust these offsets based on your UI layout
-                const int HEADER_OFFSET = 1;    // Title
-                const int TOOL_OFFSET = 0;      // Tool selector
-                const int BORDER_OFFSET = 1;    // Border
-
-                int canvas_x = mouse.x - BORDER_OFFSET;
-                int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
-
-                // Ensure drawing only happens within the canvas bounds
-                if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
-                    canvas_y >= 0 && canvas_y < canvas.getHeight()) {
-                    // Set the character at the current mouse position
-                    canvas.setChar(canvas_x, canvas_y, selected_char);
-
-                    // Ask FTXUI to redraw the canvas
-                    return true;  // Consume the event, redraw
-                }
-            }
+            return tool.HandleEvent(mouse, canvas, selected_char);
         }
         // Your other event handling logic here
         return false;
