@@ -8,6 +8,7 @@
 #include "../draw_canvas/draw_canvas.hpp"
 #include "screen_helper.hpp"
 #include "../draw_canvas/pencil_tool.hpp"
+#include "../draw_canvas/eraser_tool.hpp"
 #include <memory>
 
 using namespace ftxui;
@@ -50,7 +51,7 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
-            return tool.HandleEvent(mouse, canvas, selected_char);
+            return current_tool->HandleEvent(mouse, canvas);
         }
         // Your other event handling logic here
         return false;
@@ -66,8 +67,6 @@ private:
     Component fileMenuBtn;
     Component toolSizeSlider;
 
-    std::string currentTool = "Brush";
-    std::vector<std::string> tools = {"Brush", "Eraser", "Fill"};
     int selectedToolIndex = 0;
     std::vector<Component> toolbarComponents;
     Component toolIncreaseBtn;
@@ -80,6 +79,8 @@ private:
     Component charButtonsContainer;  // Add this to manage the button
 
     draw_canvas::PencilTool tool = PencilTool();
+    std::unique_ptr<ToolBase> current_tool;
+    std::unordered_map<std::string, std::function<std::unique_ptr<ToolBase>()>> tools;
 
     enum SwitchDirections
     {
@@ -105,32 +106,14 @@ private:
         });
     }
 
-    void InitializeToolbar()
-    {
-        fileMenuBtn = Button("File", [this] {
-            showFileMenu = true;
-            // Callback will be implemented later
-        });
-
-        // Create tool selector
-        auto toolSelector = Menu(&tools, &selectedToolIndex);
-
-        toolSizeSlider = Slider("",&tool_size, 1, 10, 1);
-        auto toolbar_elements = Container::Horizontal({
-            fileMenuBtn,
-            Renderer([](bool) { return text(" | "); }),  // Separator
-            toolSelector | center,
-            Renderer([](bool) { return text(" | "); }),  // Separator
-            Container::Horizontal({
-                Renderer([](bool) { return text("Size: "); }),
-                toolSizeSlider
-            })
-        });
-        toolbarContainer = toolbar_elements;
-    }
-
     void InitializeTool()
     {
+        // Initialize with default tool
+        current_tool = std::make_unique<PencilTool>();
+        //Add tools to unordered map
+        tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
+        tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
+
         tool = PencilTool();
     }
 
@@ -150,6 +133,7 @@ private:
             auto c = char_set[i];
             auto button = Button(std::string(1, char_set[i]), [c, this] {
                 selected_char = c;
+                current_tool->SetCharacter(c);
             });
             characterButtons.push_back(button);
         }

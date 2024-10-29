@@ -9,6 +9,9 @@ namespace constants {
     constexpr const char* saveOptionLabel = "F5-SAVE\t";
     constexpr const char* loadOptionLabel = "F8-LOAD\t";
     constexpr const char* exitOptionLabel = "F12-EXIT\t";
+
+    constexpr const char* pencilToolLabel = "Pencil";
+    constexpr const char* eraserToolLabel = "Eraser";
 }
 
 #endif // CONSTANTS_HPP

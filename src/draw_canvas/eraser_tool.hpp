@@ -1,11 +1,11 @@
-#ifndef PENCIL_TOOL_HPP
-#define PENCIL_TOOL_HPP
+#ifndef ERASER_TOOL_H
+#define ERASER_TOOL_H
 
 #include "tool_base.hpp"
 #include "../constants.hpp"
 using namespace ftxui;
 namespace draw_canvas {
-class PencilTool : public ToolBase
+class EraserTool : public ToolBase
 {
 public:
     bool HandleEvent(const ftxui::Mouse& mouse, Canvas& canvas) override {
@@ -27,20 +27,15 @@ public:
 
             if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
                 canvas_y >= 0 && canvas_y < canvas.getHeight()) {
-                canvas.setChar(canvas_x, canvas_y, selected_char);
+                canvas.setChar(canvas_x, canvas_y, ' ');
                 return true;
             }
         }
         return false;
     }
 
-    const char* GetName() const override { return constants::pencilToolLabel; }
-
-    void SetCharacter(char selected_char) override
-    {
-        this->selected_char = selected_char;
-    }
+    const char* GetName() const override { return constants::eraserToolLabel; }
 };
 }
 
-#endif // PENCIL_TOOL_HPP
+#endif // ERASER_TOOL_H

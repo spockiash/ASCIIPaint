@@ -30,6 +30,7 @@ add_executable(ASCIIPaint src/main.cpp
     src/screens/screen_helper.hpp
     src/screens/file_menu_screen_copy.hpp
     src/draw_canvas/pencil_tool.hpp
+    src/draw_canvas/eraser_tool.hpp
 
 )
 
