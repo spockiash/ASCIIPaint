@@ -17,7 +17,7 @@ add_executable(ASCIIPaint src/main.cpp
 
 
     src/draw_canvas/draw_canvas.hpp
-        src/screens/screen_manager.hpp
+    src/screens/screen_manager.hpp
     src/screens/tool_menu_screen.hpp
     src/screens/screen_base.hpp
     src/screens/drawing_screen.hpp
@@ -31,7 +31,8 @@ add_executable(ASCIIPaint src/main.cpp
     src/draw_canvas/pencil_tool.hpp
     src/draw_canvas/eraser_tool.hpp
     src/program_state.hpp
-        src/draw_canvas/circle_tool.hpp
+    src/draw_canvas/circle_tool.hpp
+    src/draw_canvas/line_tool.hpp
 
 )
 

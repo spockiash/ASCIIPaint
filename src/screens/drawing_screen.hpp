@@ -14,6 +14,8 @@
 #include "../program_state.hpp"
 #include <memory>
 
+#include "../draw_canvas/line_tool.hpp"
+
 using namespace ftxui;
 using namespace draw_canvas;
 using namespace program_state;
@@ -118,6 +120,7 @@ private:
         //Add tools to unordered map
         statePtr->tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
         statePtr->tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
+        statePtr->tools[constants::lineToolLabel] = []() { return std::make_unique<LineTool>(); };
         statePtr->tools[constants::circleToolLabel] = []() { return std::make_unique<CircleTool>(); };
         statePtr->tools[constants::patternToolLabel] = []() { return std::make_unique<PatternTool>(); };
 
