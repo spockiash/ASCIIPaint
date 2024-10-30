@@ -26,9 +26,9 @@ public:
             const int canvas_x = mouse.x - BORDER_OFFSET;
             const int canvas_y = mouse.y - (HEADER_OFFSET + TOOL_OFFSET + BORDER_OFFSET);
 
-            if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
-                canvas_y >= 0 && canvas_y < canvas.getHeight()) {
-                canvas.setChar(canvas_x, canvas_y, ' ');
+            if (canvas_x >= 0 && canvas_x < canvas.GetWidth() &&
+                canvas_y >= 0 && canvas_y < canvas.GetHeight()) {
+                canvas.SetChar(canvas_x, canvas_y, ' ');
                 return true;
             }
         }

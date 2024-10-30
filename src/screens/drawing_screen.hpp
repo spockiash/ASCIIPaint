@@ -10,6 +10,7 @@
 #include "../draw_canvas/pencil_tool.hpp"
 #include "../draw_canvas/eraser_tool.hpp"
 #include "../draw_canvas/circle_tool.hpp"
+#include "../draw_canvas/pattern_tool.hpp"
 #include "../program_state.hpp"
 #include <memory>
 
@@ -30,7 +31,7 @@ public:
     }
 
     Component Render() override {
-        auto matrixContent = canvas.getPrintable();
+        auto matrixContent = canvas.GetPrintable();
         auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
         auto buttonElements = ScreenHelper::RenderButtons(characterButtons);
         auto canvas_display = vbox(canvasElements) | border;
@@ -118,6 +119,7 @@ private:
         statePtr->tools[constants::pencilToolLabel] = []() { return std::make_unique<PencilTool>(); };
         statePtr->tools[constants::eraserToolLabel] = []() { return std::make_unique<EraserTool>(); };
         statePtr->tools[constants::circleToolLabel] = []() { return std::make_unique<CircleTool>(); };
+        statePtr->tools[constants::patternToolLabel] = []() { return std::make_unique<PatternTool>(); };
 
         tool = PencilTool();
     }
