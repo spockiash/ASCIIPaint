@@ -1,17 +1,15 @@
-//
-// Created by bobo on 29.10.24.
-//
-#ifndef CIRCLE_TOOL_HPP
-#define CIRCLE_TOOL_HPP
+#ifndef PATTERN_TOOL_HPP
+#define PATTERN_TOOL_HPP
 
 #include "tool_base.hpp"
 #include "../constants.hpp"
 #include <cmath>
 
 namespace draw_canvas {
-    class CircleTool final : public ToolBase {
+    class PatternTool final : public ToolBase {
     public:
-        ~CircleTool() override = default;
+        explicit PatternTool(float aspect_ratio = 2.0f) : aspect_ratio_(aspect_ratio) {}
+        virtual ~PatternTool() = default;
 
         bool HandleEvent(const ftxui::Mouse& mouse, Canvas& canvas) override {
             const int canvas_x = mouse.x - BORDER_OFFSET;
@@ -32,9 +30,9 @@ namespace draw_canvas {
             else if (is_drawing && mouse.motion == ftxui::Mouse::Moved) {
                 if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
                     canvas_y >= 0 && canvas_y < canvas.getHeight()) {
-                    // Calculate radius
-                    int dx = canvas_x - center_x;
-                    int dy = canvas_y - center_y;
+                    // Calculate radius considering aspect ratio
+                    float dx = canvas_x - center_x;
+                    float dy = (canvas_y - center_y) * aspect_ratio_;
                     int new_radius = static_cast<int>(std::sqrt(dx * dx + dy * dy));
 
                     // Only redraw if radius has changed
@@ -53,37 +51,32 @@ namespace draw_canvas {
             return false;
         }
 
-        [[nodiscard]] const char* GetName() const override {
-            return constants::circleToolLabel;
+        [[nodiscard]] const char* GetName() const override { 
+            return constants::circleToolLabel; 
         }
 
     private:
         int center_x = 0;
         int center_y = 0;
         int last_radius = 0;
+        float aspect_ratio_; // Terminal character aspect ratio (height:width)
 
         void drawCircle(Canvas& canvas, int cx, int cy, int radius) {
-            // Clear previous circle by filling with spaces
-            for (int y = 0; y < canvas.getHeight(); ++y) {
-                for (int x = 0; x < canvas.getWidth(); ++x) {
-                    canvas.setChar(x, y, ' ');
-                }
-            }
-
-            // Draw new circle using Bresenham's circle algorithm
+            // Use midpoint circle algorithm with aspect ratio correction
             int x = radius;
             int y = 0;
-            int error = 0;
+            int decision = 1 - radius;
 
-            while (x >= y) {
-                plotCirclePoints(canvas, cx, cy, x, y);
-                plotCirclePoints(canvas, cx, cy, y, x);
+            while (y <= x) {
+                // Plot points in all octants, adjusting y for aspect ratio
+                plotCirclePoints(canvas, cx, cy, x, static_cast<int>(y / aspect_ratio_));
 
                 y++;
-                error += 1 + 2 * y;
-                if (2 * (error - x) + 1 > 0) {
+                if (decision <= 0) {
+                    decision += 2 * y + 1;
+                } else {
                     x--;
-                    error += 1 - 2 * x;
+                    decision += 2 * (y - x) + 1;
                 }
             }
         }
@@ -101,7 +94,7 @@ namespace draw_canvas {
         }
 
         void plotPoint(Canvas& canvas, int x, int y) {
-            if (x >= 0 && x < canvas.getWidth() &&
+            if (x >= 0 && x < canvas.getWidth() && 
                 y >= 0 && y < canvas.getHeight()) {
                 canvas.setChar(x, y, selected_char);
             }
@@ -109,4 +102,4 @@ namespace draw_canvas {
     };
 }
 
-#endif // CIRCLE_TOOL_HPP
+#endif // PATTERN_TOOL_HPP

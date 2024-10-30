@@ -97,11 +97,14 @@ using namespace ftxui;
             const auto circleButton = Button(constants::circleToolLabel, [this]{
                 SelectTool(constants::circleToolLabel);
             });
+            const auto patternButton = Button(constants::patternToolLabel, [this]{
+                SelectTool(constants::patternToolLabel);
+            });
 
             tool_select_buttons.push_back(pencilButton);
             tool_select_buttons.push_back(eraserButton);
             tool_select_buttons.push_back(circleButton);
-
+            tool_select_buttons.push_back(patternButton);
             tool_select_menu = Container::Vertical(tool_select_buttons);
         }
 
