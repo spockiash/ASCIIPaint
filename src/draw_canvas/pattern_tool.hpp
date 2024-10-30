@@ -17,8 +17,8 @@ namespace draw_canvas {
 
             // Start drawing on mouse press - set center point
             if (mouse.button == ftxui::Mouse::Left && mouse.motion == ftxui::Mouse::Pressed) {
-                if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
-                    canvas_y >= 0 && canvas_y < canvas.getHeight()) {
+                if (canvas_x >= 0 && canvas_x < canvas.GetWidth() &&
+                    canvas_y >= 0 && canvas_y < canvas.GetHeight()) {
                     center_x = canvas_x;
                     center_y = canvas_y;
                     is_drawing = true;
@@ -28,8 +28,8 @@ namespace draw_canvas {
             }
             // Update circle on mouse move
             else if (is_drawing && mouse.motion == ftxui::Mouse::Moved) {
-                if (canvas_x >= 0 && canvas_x < canvas.getWidth() &&
-                    canvas_y >= 0 && canvas_y < canvas.getHeight()) {
+                if (canvas_x >= 0 && canvas_x < canvas.GetWidth() &&
+                    canvas_y >= 0 && canvas_y < canvas.GetHeight()) {
                     // Calculate radius considering aspect ratio
                     float dx = canvas_x - center_x;
                     float dy = (canvas_y - center_y) * aspect_ratio_;
@@ -94,9 +94,9 @@ namespace draw_canvas {
         }
 
         void plotPoint(Canvas& canvas, int x, int y) {
-            if (x >= 0 && x < canvas.getWidth() && 
-                y >= 0 && y < canvas.getHeight()) {
-                canvas.setChar(x, y, selected_char);
+            if (x >= 0 && x < canvas.GetWidth() &&
+                y >= 0 && y < canvas.GetHeight()) {
+                canvas.SetChar(x, y, selected_char);
             }
         }
     };
