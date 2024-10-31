@@ -2,9 +2,13 @@
 #define CONSTANTS_HPP
 
 namespace constants {
-    constexpr int BORDER_OFFSET = 2;
+    //TOOL OFFSETS
+    constexpr int BORDER_OFFSET = 1;
     constexpr int HEADER_OFFSET = 1;
     constexpr int TOOL_OFFSET = 1;
+    //CANVAS UI OFFSETS
+    constexpr int CANVAS_X_MARGIN = 2;
+    constexpr int CANVAS_Y_MARGIN = 9;
 
     constexpr const char* programNameAndVersion = "ASCII Painter v 0.2.0";
     constexpr const char* fileOptionLabel = "F1-FILE\t";

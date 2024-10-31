@@ -17,10 +17,8 @@ int main() {
 
     //terminal size setup
     auto termSize = ftxui::Terminal::Size();
-    constexpr auto x_cor = constants::BORDER_OFFSET; //Correct canvas size for UI elements
-    constexpr auto y_cor = constants::BORDER_OFFSET + constants::TOOL_OFFSET + constants::HEADER_OFFSET; //Correct canvas size for UI elements
-    auto width = termSize.dimx - x_cor;
-    auto height = termSize.dimy - y_cor;
+    auto width = termSize.dimx - constants::CANVAS_X_MARGIN;
+    auto height = termSize.dimy - constants::CANVAS_Y_MARGIN;
 
     //create shared canvas
     sharedProgramState->canvas = std::make_shared<draw_canvas::Canvas>(width,height);
