@@ -2,7 +2,11 @@
 #define CONSTANTS_HPP
 
 namespace constants {
-    constexpr const char* programNameAndVersion = "ASCII Painter v 0.1";
+    constexpr int BORDER_OFFSET = 2;
+    constexpr int HEADER_OFFSET = 1;
+    constexpr int TOOL_OFFSET = 1;
+
+    constexpr const char* programNameAndVersion = "ASCII Painter v 0.2.0";
     constexpr const char* fileOptionLabel = "F1-FILE\t";
     constexpr const char* toolsOptionLabel = "F2-TOOLS\t";
     constexpr const char* canvasOptionLabel = "F3-CANVAS\t";
@@ -15,6 +19,10 @@ namespace constants {
     constexpr const char* lineToolLabel = "Line";
     constexpr const char* circleToolLabel = "Circle";
     constexpr const char* patternToolLabel = "Pattern";
+
+    constexpr const char* fileSaveLabel = "Save";
+    constexpr const char* loadSaveLabel = "Load";
+    constexpr const char* exitLabel = "Exit";
 }
 
 #endif // CONSTANTS_HPP

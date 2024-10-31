@@ -23,7 +23,7 @@ using namespace program_state;
 namespace screens {
 class DrawingScreen : public screens::ScreenBase {
 public:
-    DrawingScreen(int width, int height, program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)), canvas(width, height) {
+    explicit DrawingScreen(program_state::ProgramStatePtr program_state) : ScreenBase(std::move(program_state)) {
         InitializeTool();
         InitializeComponents();
     }
@@ -33,7 +33,7 @@ public:
     }
 
     Component Render() override {
-        auto matrixContent = canvas.GetPrintable();
+        auto matrixContent = statePtr->canvas->GetPrintable();
         auto canvasElements = ScreenHelper::CanvasToElements(matrixContent);
         auto buttonElements = ScreenHelper::RenderButtons(characterButtons);
         auto canvas_display = vbox(canvasElements) | border;
@@ -57,7 +57,7 @@ public:
         // Handle mouse and key events for drawing
         if (event.is_mouse()) {
             auto mouse = event.mouse();
-            return statePtr->current_tool->HandleEvent(mouse, canvas);
+            return statePtr->current_tool->HandleEvent(mouse, *statePtr->canvas);
         }
         // Your other event handling logic here
         return false;
@@ -67,7 +67,6 @@ private:
     char selected_char = 'a';
     bool is_drawing = false;
     int tool_size = 1;
-    draw_canvas::Canvas canvas;
 
     Component toolbarContainer;
     Component fileMenuBtn;
