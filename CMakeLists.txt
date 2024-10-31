@@ -33,6 +33,8 @@ add_executable(ASCIIPaint src/main.cpp
     src/program_state.hpp
     src/draw_canvas/circle_tool.hpp
     src/draw_canvas/line_tool.hpp
+        src/screens/file_menu_screen.hpp
+        src/file_utils.hpp
 
 )
 

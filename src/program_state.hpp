@@ -10,6 +10,7 @@ namespace program_state{
 struct ProgramState {
     std::unique_ptr<ToolBase> current_tool;
     std::unordered_map<std::string, std::function<std::unique_ptr<ToolBase>()>> tools;
+    std::shared_ptr<Canvas> canvas;
 };
 
 using ProgramStatePtr = std::shared_ptr<ProgramState>;

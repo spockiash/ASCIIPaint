@@ -8,7 +8,7 @@ using ASCII characters.
 ![What can you expect](image.png)
 
 ## Version
-Current version: v0.1.0
+Current version: v0.2.0
 
 ## Dependencies
 - CMake (>= 3.11)
@@ -16,19 +16,6 @@ Current version: v0.1.0
 - FTXUI library
 
 ## Quick Start
-
-### Using the build script
-```bash
-# Clone and build
-git clone https://github.com/spockiash/ASCIIPaint
-cd ASCIIpaint
-chmod +x build.sh
-./build.sh
-
-# Run the application
-./build/ascii-paint
-```
-
 ### Manual build
 ```bash
 # Clone the repository
@@ -44,7 +31,7 @@ cmake ..
 make
 
 # Run the application
-./ascii-paint
+./ASCIIpaint
 ```
 
 ## Usage
