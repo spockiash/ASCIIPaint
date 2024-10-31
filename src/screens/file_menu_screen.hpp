@@ -6,6 +6,8 @@
 #include "../program_state.hpp"
 #include <ftxui/component/component.hpp>
 
+#include "../file_utils.hpp"
+
 using namespace program_state;
 namespace screens {
 using namespace ftxui;
@@ -55,6 +57,7 @@ using namespace ftxui;
         {
             const auto saveButton = Button(constants::saveOptionLabel, [this]{
                 //Handle save
+                FileUtils::SaveToFile("test.txt", statePtr->canvas->GetPrintable());
             });
             const auto loadButton = Button(constants::loadOptionLabel, [this]{
                 //Handle load;
